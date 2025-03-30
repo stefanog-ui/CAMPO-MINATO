@@ -7,10 +7,12 @@ import java.awt.event.ActionListener;
 
 public class AzioneCambiaMenu implements ActionListener {
     private JPanel pannelloPrincipale;
+    private JPanel pannelloIndietro;
     private JComboBox comboDifficolta;
 
-    public AzioneCambiaMenu(JPanel pannelloPrincipale, JComboBox comboDifficolta) {
+    public AzioneCambiaMenu(JPanel pannelloPrincipale, JPanel pannelloIndietro, JComboBox comboDifficolta) {
         this.pannelloPrincipale = pannelloPrincipale;
+        this.pannelloIndietro = pannelloIndietro;
         this.comboDifficolta = comboDifficolta;
     }
 
@@ -25,7 +27,7 @@ public class AzioneCambiaMenu implements ActionListener {
         btnDifficolta.setMaximumSize(dimensionePulsanti);
         btnHelp.setMaximumSize(dimensionePulsanti);
 
-        btnDifficolta.addActionListener(new MostraComboDifficolta(pannelloPrincipale, comboDifficolta));
+        btnDifficolta.addActionListener(new MostraComboDifficolta(pannelloPrincipale, pannelloIndietro, comboDifficolta));
         btnHelp.addActionListener(new AzioneHelp(pannelloPrincipale));
 
         pannelloPrincipale.add(btnDifficolta);
@@ -40,6 +42,7 @@ public class AzioneCambiaMenu implements ActionListener {
         pannelloPrincipale.add(btnHelp);
         pannelloPrincipale.add(Box.createVerticalGlue());
 
+        pannelloIndietro.setVisible(false);
         pannelloPrincipale.revalidate();
         pannelloPrincipale.repaint();
     }

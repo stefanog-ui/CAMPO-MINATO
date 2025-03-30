@@ -8,10 +8,12 @@ import java.awt.event.ActionListener;
 
 public class MostraComboDifficolta implements ActionListener {
     private JPanel pannelloPrincipale;
+    private JPanel pannelloIndietro;
     private JComboBox<String> comboDifficolta;
 
-    public MostraComboDifficolta(JPanel pannelloPrincipale, JComboBox<String> comboDifficolta) {
+    public MostraComboDifficolta(JPanel pannelloPrincipale, JPanel pannelloIndietro, JComboBox<String> comboDifficolta) {
         this.pannelloPrincipale = pannelloPrincipale;
+        this.pannelloIndietro = pannelloIndietro;
         this.comboDifficolta = comboDifficolta;
     }
 
@@ -28,6 +30,7 @@ public class MostraComboDifficolta implements ActionListener {
         if (result == JOptionPane.OK_OPTION) {
             String selectedDifficulty = (String) comboDifficolta.getSelectedItem();
             Utility.cambiaDifficolta(selectedDifficulty,pannelloPrincipale);
+            pannelloIndietro.setVisible(true);
         }
     }
 }
