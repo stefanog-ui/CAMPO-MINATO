@@ -1,5 +1,6 @@
 import controllo.AzioneCambiaDifficolta;
 import controllo.AzioneCambiaMenu;
+import utility.Utility;
 
 import javax.swing.*;
 import java.awt.*;
@@ -35,7 +36,7 @@ public class Main {
     }
 
     private void inizializzaPannelloPrincipale() {
-        creaCampo(9);
+        Utility.creaCampo(9,pannelloPrincipale);
     }
 
     private void lanciaGioco() {
@@ -44,17 +45,6 @@ public class Main {
         pulsanteIndietro.addActionListener(new AzioneCambiaDifficolta(pannelloPrincipale));
         pannelloIndietro.add(pulsanteIndietro, BorderLayout.CENTER);
         inizializzaFrame();
-    }
-
-    private void creaCampo(int dimensione) {
-        pannelloPrincipale.removeAll();
-        pannelloPrincipale.setLayout(new GridLayout(dimensione, dimensione));
-        for (int i = 0; i < dimensione * dimensione; i++) {
-            pannelloPrincipale.add(new JButton("Pulsante " + (i + 1)));
-        }
-        pannelloPrincipale.revalidate();
-        pannelloPrincipale.repaint();
-        System.out.println("Layout changed to: " + dimensione + "x" + dimensione);
     }
 
     public static void main(String[] args) {
