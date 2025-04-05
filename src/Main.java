@@ -4,7 +4,7 @@ import utility.Utility;
 import javax.swing.*;
 import java.awt.*;
 
-public class Main {
+public class  Main {
     private JFrame frame = new JFrame();
     private JPanel pannelloPrincipale = new JPanel();
     private JPanel pannelloIndietro = new JPanel();
