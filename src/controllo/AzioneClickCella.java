@@ -6,10 +6,8 @@ import modello.SharedCampoMinato;
 import utility.Utility;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Objects;
 
 public class AzioneClickCella implements ActionListener {
     private int r;
@@ -36,5 +34,27 @@ public class AzioneClickCella implements ActionListener {
         }
 
         button.setEnabled(false);
+        delayPopupGameOver(clickedCell.isHasMina(), (JPanel) button.getParent());
     }
+
+    void delayPopupGameOver(boolean hasMine, JPanel pannelloPrincipale) {
+        if (!hasMine) return;
+
+        new Thread(() -> {
+            try {
+                Thread.sleep(3000); 
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            SwingUtilities.invokeLater(() -> {
+                int result = JOptionPane.showConfirmDialog(null, "💥 BOOM! Hai cliccato su una mina. Vuoi riprovare?", "Game Over", JOptionPane.YES_NO_OPTION);
+                if (result == JOptionPane.YES_OPTION) {
+                    Utility.cambiaDifficolta("FACILE", pannelloPrincipale);
+                }
+            });
+        }).start();
+    }
+
+
 }
