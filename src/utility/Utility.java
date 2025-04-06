@@ -46,6 +46,52 @@ public class Utility {
         pannelloPrincipale.revalidate();
         pannelloPrincipale.repaint();
         System.out.println("Layout cambiato: " + dimensione + "x" + dimensione);
+
+        for (int i=0; i<dimensione; i++) {
+            for (int j=0; j<dimensione; j++) {
+
+                if (! matriceCelle[i][j].isHasMina()) {
+
+                    int cont = 0;
+
+                    for (int k=-1; k<2; k++) { // riga sopra, riga centrale, riga sotto
+                        for (int w=-1; w<2; w++) { // colonna sinistra, colonna centrale, colonna destra
+
+                            if (i+k >= 0 && i+k < dimensione) {  // se c'è una riga sopra o una riga sotto
+                                if (j+w >= 0 && j+w < dimensione) {  // se c'è la colonna a sinistra o a destra
+                                    //if (k != 0 || w != 0) {  // escludere la cella centrale
+
+                                        if (matriceCelle[i + k][j + w].isHasMina()) {  // se c'è la mina
+                                            cont++; // aumento il contatore
+                                        }
+
+                                    }
+                            }
+
+                        }
+                    }
+
+                    matriceCelle[i][j].setNumeroMine(cont);  // setto il contato delle mine vicine alla cella corrente
+
+                }
+
+
+            }
+        }
+
+        for (int i=0; i<dimensione; i++) {
+            for (int j=0; j<dimensione; j++) {
+                if (matriceCelle[i][j].isHasMina()) {
+                    System.out.print(" X |");
+                }
+                else {
+                    System.out.print(" ");
+                    System.out.print(matriceCelle[i][j].getNumeroMine());
+                    System.out.print(" |");
+                }
+            }
+            System.out.println("");
+        }
     }
 
     public static void cambiaDifficolta(String difficolta, JPanel pannelloPrincipale) {
@@ -58,4 +104,5 @@ public class Utility {
                                 break;
         }
     }
+
 }
