@@ -39,4 +39,6 @@ public class Cella {
     public void setScoperta(boolean scoperta) {
         isScoperta = scoperta;
     }
+
+
 }

@@ -14,29 +14,44 @@ public class Utility {
         Cella[][] matriceCelle = new Cella[dimensione][dimensione];
         CampoMinato campoM = new CampoMinato(matriceCelle);
         SharedCampoMinato.sharedCampo.setCampoMinato(campoM);
+
         pannelloPrincipale.removeAll();
         pannelloPrincipale.setLayout(new GridLayout(dimensione, dimensione));
 
         Random random = new Random();
-        int totCelle = dimensione * dimensione;
-        int totMine = (int) (totCelle * 0.15);
+        int totalCells = dimensione * dimensione;
+        int mineCount = (int) (totalCells * 0.15);
 
-        for (int i = 0; i < totMine; i++) {
-            int indiceRandom;
+        for (int i = 0; i < mineCount; i++) {
+            int randomIndex;
             do {
-                indiceRandom = random.nextInt(totCelle);
-            } while (matriceCelle[indiceRandom / dimensione][indiceRandom % dimensione] != null);
-            int riga = indiceRandom / dimensione;
-            int colonna = indiceRandom % dimensione;
-            matriceCelle[riga][colonna] = new Cella(indiceRandom, 0, true);
+                randomIndex = random.nextInt(totalCells);
+            } while (matriceCelle[randomIndex / dimensione][randomIndex % dimensione] != null);
+
+            int row = randomIndex / dimensione;
+            int col = randomIndex % dimensione;
+            matriceCelle[row][col] = new Cella(randomIndex, 0, true);
         }
 
-        for (int i = 0; i < totCelle; i++) {
-            int riga = i / dimensione;
-            int colonna = i % dimensione;
+        for (int i = 0; i < totalCells; i++) {
+            int row = i / dimensione;
+            int col = i % dimensione;
 
-            if (matriceCelle[riga][colonna] == null) {
-                matriceCelle[riga][colonna] = new Cella(i, 0, false);
+            if (matriceCelle[row][col] == null) {
+                int mineVicino = 0;
+                for (int dr = -1; dr <= 1; dr++) {
+                    for (int dc = -1; dc <= 1; dc++) {
+                        int newRow = row + dr;
+                        int newCol = col + dc;
+                        if (newRow >= 0 && newRow < dimensione && newCol >= 0 && newCol < dimensione) {
+                            if (matriceCelle[newRow][newCol] != null && matriceCelle[newRow][newCol].isHasMina()) {
+                                mineVicino++;
+                            }
+                        }
+                    }
+                }
+
+                matriceCelle[row][col] = new Cella(i, mineVicino, false);
             }
 
             JButton button = new JButton("Pulsante " + (i + 1));
@@ -45,7 +60,7 @@ public class Utility {
 
         pannelloPrincipale.revalidate();
         pannelloPrincipale.repaint();
-        System.out.println("Layout cambiato: " + dimensione + "x" + dimensione);
+        System.out.println("Campo creato: " + dimensione + "x" + dimensione);
     }
 
     public static void cambiaDifficolta(String difficolta, JPanel pannelloPrincipale) {
