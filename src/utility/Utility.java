@@ -3,6 +3,7 @@ package utility;
 import controllo.AzioneClickCella;
 import modello.CampoMinato;
 import modello.Cella;
+import modello.Icons;
 import modello.SharedCampoMinato;
 
 import javax.swing.*;
@@ -65,6 +66,28 @@ public class Utility {
         pannelloPrincipale.revalidate();
         pannelloPrincipale.repaint();
         System.out.println("Campo creato: " + dimensione + "x" + dimensione);
+    }
+
+    public static void revealAllBombs(JPanel pannelloPrincipale) {
+        Cella[][] matriceCelle = SharedCampoMinato.sharedCampo.getCampoMinato().getCampo();
+        for (int r = 0; r < matriceCelle.length; r++) {
+            for (int c = 0; c < matriceCelle[r].length; c++) {
+                Cella cella = matriceCelle[r][c];
+                JButton button = (JButton) pannelloPrincipale.getComponent(r * matriceCelle.length + c);
+
+                if (cella.isHasMina()) {
+                    button.setIcon(Icons.sharedIcons.iconaBomba);
+                }
+                else {
+                    if (cella.getNumeroMine() > 0) {
+                        button.setText(String.valueOf(cella.getNumeroMine()));
+                    } else {
+                        button.setText("");
+                    }
+                }
+                button.setEnabled(false);
+            }
+        }
     }
 
     public static void cambiaDifficolta(String difficolta, JPanel pannelloPrincipale) {

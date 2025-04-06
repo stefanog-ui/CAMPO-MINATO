@@ -21,12 +21,14 @@ public class AzioneClickCella implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         JButton button = (JButton) e.getSource();
+        JPanel pannelloPrincipale = (JPanel) button.getParent();
         Cella[][] matriceCelle = SharedCampoMinato.sharedCampo.getCampoMinato().getCampo();
         Cella clickedCell = matriceCelle[r][c];
         clickedCell.setScoperta(true);
 
         if (clickedCell.isHasMina()) {
             button.setIcon(Icons.sharedIcons.iconaBomba);
+            Utility.revealAllBombs(pannelloPrincipale);
         } else if (clickedCell.getNumeroMine() > 0) {
             button.setText(String.valueOf(clickedCell.getNumeroMine()));
         } else {
@@ -34,7 +36,7 @@ public class AzioneClickCella implements ActionListener {
         }
 
         button.setEnabled(false);
-        delayPopupGameOver(clickedCell.isHasMina(), (JPanel) button.getParent());
+        delayPopupGameOver(clickedCell.isHasMina(), pannelloPrincipale);
     }
 
     void delayPopupGameOver(boolean hasMine, JPanel pannelloPrincipale) {
@@ -42,7 +44,7 @@ public class AzioneClickCella implements ActionListener {
 
         new Thread(() -> {
             try {
-                Thread.sleep(3000); 
+                Thread.sleep(3000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
