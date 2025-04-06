@@ -1,11 +1,13 @@
 package utility;
 
+import controllo.AzioneClickCella;
 import modello.CampoMinato;
 import modello.Cella;
 import modello.SharedCampoMinato;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Objects;
 import java.util.Random;
 
 public class Utility {
@@ -50,11 +52,13 @@ public class Utility {
                         }
                     }
                 }
-
                 matriceCelle[row][col] = new Cella(i, mineVicino, false);
             }
 
-            JButton button = new JButton("Pulsante " + (i + 1));
+            JButton button = new JButton();
+            button.setOpaque(true);
+
+            button.addActionListener(new AzioneClickCella(row, col));
             pannelloPrincipale.add(button);
         }
 
