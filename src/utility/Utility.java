@@ -1,6 +1,6 @@
 package utility;
 
-import controllo.AzioneClickCella;
+import controllo.AzioneMouseClickCella;
 import modello.CampoMinato;
 import modello.Cella;
 import modello.Icons;
@@ -8,7 +8,6 @@ import modello.SharedCampoMinato;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Objects;
 import java.util.Random;
 
 public class Utility {
@@ -59,7 +58,7 @@ public class Utility {
             JButton button = new JButton();
             button.setOpaque(true);
 
-            button.addActionListener(new AzioneClickCella(row, col));
+            button.addMouseListener(new AzioneMouseClickCella(row, col));
             pannelloPrincipale.add(button);
         }
 
@@ -77,6 +76,8 @@ public class Utility {
 
                 if (cella.isHasMina()) {
                     button.setIcon(Icons.sharedIcons.iconaBomba);
+                    button.setEnabled(true);
+                    button.removeMouseListener(new AzioneMouseClickCella(r, c));
                 }
                 else {
                     if (cella.getNumeroMine() > 0) {
@@ -84,8 +85,8 @@ public class Utility {
                     } else {
                         button.setText("");
                     }
+                    button.setEnabled(false);
                 }
-                button.setEnabled(false);
             }
         }
     }
@@ -103,6 +104,7 @@ public class Utility {
     }
 
     public static void cambiaDifficolta(String difficolta, JPanel pannelloPrincipale) {
+        SharedCampoMinato.sharedCampo.setDifficolta(difficolta);
         switch (difficolta) {
             case "FACILE": creaCampo(9, pannelloPrincipale);
                 break;
@@ -112,4 +114,6 @@ public class Utility {
                 break;
         }
     }
+
+
 }

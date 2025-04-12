@@ -6,20 +6,21 @@ import modello.SharedCampoMinato;
 import utility.Utility;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
-public class AzioneClickCella implements ActionListener {
+public class AzioneMouseClickCella extends MouseAdapter {
+
     private int r;
     private int c;
 
-    public AzioneClickCella(int r, int c) {
+    public AzioneMouseClickCella(int r, int c) {
         this.r = r;
         this.c = c;
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void mouseClicked(MouseEvent e) {
         JButton button = (JButton) e.getSource();
         JPanel pannelloPrincipale = (JPanel) button.getParent();
         Cella[][] matriceCelle = SharedCampoMinato.sharedCampo.getCampoMinato().getCampo();
@@ -28,8 +29,25 @@ public class AzioneClickCella implements ActionListener {
 
         if (clickedCell.isScoperta()) return;
 
+        if (SwingUtilities.isRightMouseButton(e)) {
+            // Toggle flag
+            if (!clickedCell.isScoperta()) {
+                Icon currentIcon = button.getIcon();
+                if (currentIcon == null) {
+                    button.setIcon(Icons.sharedIcons.iconaBandiera); // You'll define this icon
+                } else {
+                    button.setIcon(null); // Remove flag
+                }
+            }
+            return;
+        }
+
+        // Tolgo bandiera
+        button.setIcon(null);
+
         if (clickedCell.isHasMina()) {
             button.setIcon(Icons.sharedIcons.iconaBomba);
+            button.setEnabled(true);
             Utility.revealAllBombs(pannelloPrincipale);
         } else {
             revealEmptyArea(r, c, matriceCelle, pannelloPrincipale);
@@ -80,7 +98,7 @@ public class AzioneClickCella implements ActionListener {
         SwingUtilities.invokeLater(() -> {
             int result = JOptionPane.showConfirmDialog(null, "🎉 Hai vinto! Vuoi giocare ancora?", "Hai vinto!", JOptionPane.YES_NO_OPTION);
             if (result == JOptionPane.YES_OPTION) {
-                Utility.cambiaDifficolta("FACILE", pannelloPrincipale); // Or track selected difficulty
+                Utility.cambiaDifficolta(SharedCampoMinato.sharedCampo.getDifficolta(), pannelloPrincipale); // Or track selected difficulty
             }
         });
     }
@@ -93,7 +111,7 @@ public class AzioneClickCella implements ActionListener {
 
         new Thread(() -> {
             try {
-                Thread.sleep(3000);
+                Thread.sleep(2000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -101,11 +119,9 @@ public class AzioneClickCella implements ActionListener {
             SwingUtilities.invokeLater(() -> {
                 int result = JOptionPane.showConfirmDialog(null, "💥 BOOM! Hai cliccato su una mina. Vuoi riprovare?", "Game Over", JOptionPane.YES_NO_OPTION);
                 if (result == JOptionPane.YES_OPTION) {
-                    Utility.cambiaDifficolta("FACILE", pannelloPrincipale);
+                    Utility.cambiaDifficolta(SharedCampoMinato.sharedCampo.getDifficolta(), pannelloPrincipale);
                 }
             });
         }).start();
     }
-
-
 }
