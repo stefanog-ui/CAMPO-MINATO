@@ -90,14 +90,26 @@ public class Utility {
         }
     }
 
+    public static boolean checkWinCondition(Cella[][] matriceCelle) {
+        for (int r = 0; r < matriceCelle.length; r++) {
+            for (int c = 0; c < matriceCelle[r].length; c++) {
+                Cella cella = matriceCelle[r][c];
+                if (!cella.isHasMina() && !cella.isScoperta()) {
+                    return false; // Still cells to reveal
+                }
+            }
+        }
+        return true; // All non-bomb cells revealed
+    }
+
     public static void cambiaDifficolta(String difficolta, JPanel pannelloPrincipale) {
         switch (difficolta) {
             case "FACILE": creaCampo(9, pannelloPrincipale);
-                            break;
+                break;
             case "MEDIO": creaCampo(14, pannelloPrincipale);
-                            break;
+                break;
             case "DIFFICILE": creaCampo(19, pannelloPrincipale);
-                                break;
+                break;
         }
     }
 }

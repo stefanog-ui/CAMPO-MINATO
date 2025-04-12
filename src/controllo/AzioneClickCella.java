@@ -35,6 +35,13 @@ public class AzioneClickCella implements ActionListener {
             revealEmptyArea(r, c, matriceCelle, pannelloPrincipale);
         }
 
+        if (!clickedCell.isHasMina()) {
+            if (Utility.checkWinCondition(matriceCelle)) {
+                showWinDialog(pannelloPrincipale);
+            }
+        }
+
+
         delayPopupGameOver(clickedCell.isHasMina(), pannelloPrincipale);
     }
 
@@ -55,6 +62,7 @@ public class AzioneClickCella implements ActionListener {
         int numeroMine = cella.getNumeroMine();
         if (numeroMine > 0) {
             button.setText(String.valueOf(numeroMine));
+            return;
         } else {
             button.setText("");
             // Continue revealing adjacent cells
@@ -68,6 +76,16 @@ public class AzioneClickCella implements ActionListener {
         }
     }
 
+    private void showWinDialog(JPanel pannelloPrincipale) {
+        SwingUtilities.invokeLater(() -> {
+            int result = JOptionPane.showConfirmDialog(null, "🎉 Hai vinto! Vuoi giocare ancora?", "Hai vinto!", JOptionPane.YES_NO_OPTION);
+            if (result == JOptionPane.YES_OPTION) {
+                Utility.cambiaDifficolta("FACILE", pannelloPrincipale); // Or track selected difficulty
+            }
+        });
+    }
+
+
 
 
     void delayPopupGameOver(boolean hasMine, JPanel pannelloPrincipale) {
@@ -75,7 +93,7 @@ public class AzioneClickCella implements ActionListener {
 
         new Thread(() -> {
             try {
-                Thread.sleep(1300);
+                Thread.sleep(3000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
