@@ -3,6 +3,7 @@ package controllo;
 import modello.Cella;
 import modello.Icons;
 import modello.SharedCampoMinato;
+import utility.PlaySoundUtility;
 import utility.Utility;
 
 import javax.swing.*;
@@ -46,6 +47,7 @@ public class AzioneMouseClickCella extends MouseAdapter {
         button.setIcon(null);
 
         if (clickedCell.isHasMina()) {
+            PlaySoundUtility.playBombSound();
             button.setIcon(Icons.sharedIcons.iconaBomba);
             button.setEnabled(true);
             Utility.revealAllBombs(pannelloPrincipale);
