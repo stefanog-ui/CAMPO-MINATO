@@ -23,28 +23,59 @@ public class AzioneClickCella implements ActionListener {
         JButton button = (JButton) e.getSource();
         JPanel pannelloPrincipale = (JPanel) button.getParent();
         Cella[][] matriceCelle = SharedCampoMinato.sharedCampo.getCampoMinato().getCampo();
+
         Cella clickedCell = matriceCelle[r][c];
-        clickedCell.setScoperta(true);
+
+        if (clickedCell.isScoperta()) return;
 
         if (clickedCell.isHasMina()) {
             button.setIcon(Icons.sharedIcons.iconaBomba);
             Utility.revealAllBombs(pannelloPrincipale);
-        } else if (clickedCell.getNumeroMine() > 0) {
-            button.setText(String.valueOf(clickedCell.getNumeroMine()));
         } else {
-            button.setText("");
+            revealEmptyArea(r, c, matriceCelle, pannelloPrincipale);
         }
 
-        button.setEnabled(false);
         delayPopupGameOver(clickedCell.isHasMina(), pannelloPrincipale);
     }
+
+    private void revealEmptyArea(int r, int c, Cella[][] matriceCelle, JPanel pannelloPrincipale) {
+        int dimensione = matriceCelle.length;
+
+        if (r < 0 || r >= dimensione || c < 0 || c >= dimensione) return;
+
+        Cella cella = matriceCelle[r][c];
+        if (cella.isScoperta()) return;
+
+        cella.setScoperta(true);
+        JButton button = (JButton) pannelloPrincipale.getComponent(r * dimensione + c);
+        button.setEnabled(false);
+
+        if (cella.isHasMina()) return;
+
+        int numeroMine = cella.getNumeroMine();
+        if (numeroMine > 0) {
+            button.setText(String.valueOf(numeroMine));
+        } else {
+            button.setText("");
+            // Continue revealing adjacent cells
+            for (int dr = -1; dr <= 1; dr++) {
+                for (int dc = -1; dc <= 1; dc++) {
+                    if (dr != 0 || dc != 0) {
+                        revealEmptyArea(r + dr, c + dc, matriceCelle, pannelloPrincipale);
+                    }
+                }
+            }
+        }
+    }
+
+
 
     void delayPopupGameOver(boolean hasMine, JPanel pannelloPrincipale) {
         if (!hasMine) return;
 
         new Thread(() -> {
             try {
-                Thread.sleep(3000);
+                Thread.sleep(1300);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
