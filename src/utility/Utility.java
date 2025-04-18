@@ -71,7 +71,7 @@ public class Utility {
                         }
                     }
 
-                    matriceCelle[i][j].setNumeroMine(cont);  // setto il contato delle mine vicine alla cella corrente
+                    matriceCelle[i][j].getNumeroMine();  // setto il contato delle mine vicine alla cella corrente
 
                 }
 
