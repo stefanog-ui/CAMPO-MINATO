@@ -82,7 +82,9 @@ public class AzioneMouseClickCella extends MouseAdapter {
         }
 
         effettoCellaCliccata(button, controlloColore);
-        messaggioSconfitta(cellaCliccata.isHasMina(), pannelloPrincipale);
+
+        JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(pannelloPrincipale);
+        messaggioSconfitta(cellaCliccata.isHasMina(), pannelloPrincipale, frame);
     }
 
     @Override
@@ -190,12 +192,12 @@ public class AzioneMouseClickCella extends MouseAdapter {
         });
     }
 
-    public void messaggioSconfitta(boolean hasMine, JPanel pannelloPrincipale) {
+    public void messaggioSconfitta(boolean hasMine, JPanel pannelloPrincipale, JFrame frame) {
         if (!hasMine) return;
 
         new Thread(() -> {
             try {
-                Thread.sleep(2000);
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -204,6 +206,8 @@ public class AzioneMouseClickCella extends MouseAdapter {
                 int result = JOptionPane.showConfirmDialog(null, "💥 BOOM! Hai cliccato su una mina. Vuoi riprovare?", "Game Over", JOptionPane.YES_NO_OPTION);
                 if (result == JOptionPane.YES_OPTION) {
                     Utility.cambiaDifficolta(SharedCampoMinato.sharedCampo.getDifficolta(), pannelloPrincipale);
+                } else {
+                    frame.dispose();
                 }
             });
         }).start();

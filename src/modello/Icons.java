@@ -13,7 +13,7 @@ public class Icons {
 
     public static final ImageIcon orologio = new ImageIcon("/risorse/orologio.png");
     public static final ImageIcon coppa = new ImageIcon("/risorse/coppa.png");
-    public static final ImageIcon riprova = new ImageIcon("/risorse/riprova.png");
+    public static final ImageIcon riprova = new ImageIcon("/risorse/orologio.png");
 
     private Icons() {
         ImageIcon immagineBomba = new ImageIcon(Objects.requireNonNull(Utility.class.getResource("/risorse/bomb.png")));

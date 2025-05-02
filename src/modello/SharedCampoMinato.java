@@ -1,5 +1,7 @@
 package modello;
 
+import java.util.Timer;
+
 public class SharedCampoMinato {
     public static SharedCampoMinato sharedCampo = new SharedCampoMinato();
     private CampoMinato campoMinato;
@@ -31,4 +33,8 @@ public class SharedCampoMinato {
     public void setPrimoTocco(boolean primoTocco) {
         this.primoTocco = primoTocco;
     }
+
 }
+
+
+
