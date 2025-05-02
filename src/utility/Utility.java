@@ -1,10 +1,7 @@
 package utility;
 
 import controllo.AzioneMouseClickCella;
-import modello.CampoMinato;
-import modello.Cella;
-import modello.Icons;
-import modello.SharedCampoMinato;
+import modello.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,49 +13,55 @@ public class Utility {
         Cella[][] matriceCelle = new Cella[dimensione][dimensione];
         CampoMinato campoM = new CampoMinato(matriceCelle);
         SharedCampoMinato.sharedCampo.setCampoMinato(campoM);
+        SharedCampoMinato.sharedCampo.setPrimoTocco(true);
 
         pannelloPrincipale.removeAll();
         pannelloPrincipale.setLayout(new GridLayout(dimensione, dimensione));
 
         Random random = new Random();
-        int totalCells = dimensione * dimensione;
-        int mineCount = (int) (totalCells * 0.15);
+        int celleTotali = dimensione * dimensione;
+        int numMine = (int) (celleTotali * 0.15);
 
-        for (int i = 0; i < mineCount; i++) {
-            int randomIndex;
+        for (int i = 0; i < numMine; i++) {
+            int indiceRandom;
             do {
-                randomIndex = random.nextInt(totalCells);
-            } while (matriceCelle[randomIndex / dimensione][randomIndex % dimensione] != null);
+                indiceRandom = random.nextInt(celleTotali);
+            } while (matriceCelle[indiceRandom / dimensione][indiceRandom % dimensione] != null);
 
-            int row = randomIndex / dimensione;
-            int col = randomIndex % dimensione;
-            matriceCelle[row][col] = new Cella(randomIndex, 0, true);
+            int righe = indiceRandom / dimensione;
+            int colonne = indiceRandom % dimensione;
+            matriceCelle[righe][colonne] = new Cella(indiceRandom, 0, true);
         }
 
-        for (int i = 0; i < totalCells; i++) {
-            int row = i / dimensione;
-            int col = i % dimensione;
+        for (int i = 0; i < celleTotali; i++) {
+            int righe = i / dimensione;
+            int colonne = i % dimensione;
 
-            if (matriceCelle[row][col] == null) {
+            if (matriceCelle[righe][colonne] == null) {
                 int mineVicino = 0;
                 for (int dr = -1; dr <= 1; dr++) {
                     for (int dc = -1; dc <= 1; dc++) {
-                        int newRow = row + dr;
-                        int newCol = col + dc;
-                        if (newRow >= 0 && newRow < dimensione && newCol >= 0 && newCol < dimensione) {
-                            if (matriceCelle[newRow][newCol] != null && matriceCelle[newRow][newCol].isHasMina()) {
+                        int nuoveRighe = righe + dr;
+                        int nuoveColonne = colonne + dc;
+                        if (nuoveRighe >= 0 && nuoveRighe < dimensione && nuoveColonne >= 0 && nuoveColonne < dimensione) {
+                            if (matriceCelle[nuoveRighe][nuoveColonne] != null && matriceCelle[nuoveRighe][nuoveColonne].isHasMina()) {
                                 mineVicino++;
                             }
                         }
                     }
                 }
-                matriceCelle[row][col] = new Cella(i, mineVicino, false);
+                matriceCelle[righe][colonne] = new Cella(i, mineVicino, false);
             }
 
             JButton button = new JButton();
-            button.setOpaque(true);
+            Color bgColor = ((righe + colonne) % 2 == 0 ) ? ColoreCampo.lightGreen : ColoreCampo.darkerGreen;
 
-            button.addMouseListener(new AzioneMouseClickCella(row, col));
+            button.setOpaque(true);
+            button.setContentAreaFilled(true);
+            button.setBorderPainted(false);
+            button.setBackground(bgColor);
+
+            button.addMouseListener(new AzioneMouseClickCella(righe, colonne));
             pannelloPrincipale.add(button);
         }
 
@@ -67,7 +70,7 @@ public class Utility {
         System.out.println("Campo creato: " + dimensione + "x" + dimensione);
     }
 
-    public static void revealAllBombs(JPanel pannelloPrincipale) {
+    public static void rivelaBombe(JPanel pannelloPrincipale) {
         Cella[][] matriceCelle = SharedCampoMinato.sharedCampo.getCampoMinato().getCampo();
         for (int r = 0; r < matriceCelle.length; r++) {
             for (int c = 0; c < matriceCelle[r].length; c++) {
@@ -85,22 +88,21 @@ public class Utility {
                     } else {
                         button.setText("");
                     }
-                    button.setEnabled(false);
                 }
             }
         }
     }
 
-    public static boolean checkWinCondition(Cella[][] matriceCelle) {
+    public static boolean checkCondizioniVittoria(Cella[][] matriceCelle) {
         for (int r = 0; r < matriceCelle.length; r++) {
             for (int c = 0; c < matriceCelle[r].length; c++) {
                 Cella cella = matriceCelle[r][c];
                 if (!cella.isHasMina() && !cella.isScoperta()) {
-                    return false; // Still cells to reveal
+                    return false;
                 }
             }
         }
-        return true; // All non-bomb cells revealed
+        return true;
     }
 
     public static void cambiaDifficolta(String difficolta, JPanel pannelloPrincipale) {
@@ -114,6 +116,5 @@ public class Utility {
                 break;
         }
     }
-
 
 }

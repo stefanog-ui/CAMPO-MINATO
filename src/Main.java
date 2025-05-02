@@ -1,14 +1,15 @@
 import controllo.AzioneCambiaMenu;
 import utility.Utility;
+import vista.Sfondo;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class Main {
-    private JFrame frame = new JFrame();
-    private JPanel pannelloPrincipale = new JPanel();
-    private JPanel pannelloIndietro = new JPanel();
-    private JComboBox<String> comboDifficolta = new JComboBox();
+    private final JFrame frame = new JFrame();
+    private final JPanel pannelloPrincipale = new Sfondo("/risorse/menu-bg.png");
+    private final JPanel pannelloIndietro = new JPanel();
+    private final JComboBox<String> comboDifficolta = new JComboBox<>();
 
     private void inizializzaFrame() {
         JButton pulsanteIndietro = new JButton("Indietro");
@@ -45,7 +46,6 @@ public class Main {
     }
 
     private void lanciaGioco() {
-        /*inizializzaPannelloPrincipale();*/
         inizializzaFrame();
     }
 

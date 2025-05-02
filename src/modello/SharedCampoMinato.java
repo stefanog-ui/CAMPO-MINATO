@@ -4,6 +4,7 @@ public class SharedCampoMinato {
     public static SharedCampoMinato sharedCampo = new SharedCampoMinato();
     private CampoMinato campoMinato;
     private String difficolta;
+    private boolean primoTocco = true;
 
     private SharedCampoMinato() {}
 
@@ -21,5 +22,13 @@ public class SharedCampoMinato {
 
     public void setDifficolta(String difficolta) {
         this.difficolta = difficolta;
+    }
+
+    public boolean isPrimoTocco() {
+        return primoTocco;
+    }
+
+    public void setPrimoTocco(boolean primoTocco) {
+        this.primoTocco = primoTocco;
     }
 }

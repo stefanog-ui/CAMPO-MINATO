@@ -19,7 +19,7 @@ public class MostraComboDifficolta implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        int result = JOptionPane.showConfirmDialog(
+        int risultato = JOptionPane.showConfirmDialog(
                 pannelloPrincipale,
                 comboDifficolta,
                 "Scegli Difficoltà",
@@ -27,7 +27,7 @@ public class MostraComboDifficolta implements ActionListener {
                 JOptionPane.QUESTION_MESSAGE
         );
 
-        if (result == JOptionPane.OK_OPTION) {
+        if (risultato == JOptionPane.OK_OPTION) {
             String selectedDifficulty = (String) comboDifficolta.getSelectedItem();
             Utility.cambiaDifficolta(selectedDifficulty,pannelloPrincipale);
             pannelloIndietro.setVisible(true);

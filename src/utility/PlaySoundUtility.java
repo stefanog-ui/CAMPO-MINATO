@@ -6,22 +6,21 @@ import java.net.URL;
 
 public class PlaySoundUtility {
 
-    public static void playBombSound() {
+    public static void suonoBomba() {
         try {
-            URL soundURL = Utility.class.getResource("/resources/bomba.wav");
-            if (soundURL == null) {
-                System.err.println("Bomb sound file not found!");
+            URL suonoURL = Utility.class.getResource("/risorse/bomba.wav");
+            if (suonoURL == null) {
+                System.err.println("Il suono della bomba non è stato trovato");
                 return;
             }
 
-            AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundURL);
+            AudioInputStream audio = AudioSystem.getAudioInputStream(suonoURL);
             Clip clip = AudioSystem.getClip();
-            clip.open(audioIn);
+            clip.open(audio);
             clip.start();
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
             e.printStackTrace();
         }
     }
-
 
 }

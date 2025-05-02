@@ -1,17 +1,18 @@
 package controllo;
 
 import modello.Cella;
+import modello.ColoreCampo;
 import modello.Icons;
 import modello.SharedCampoMinato;
 import utility.PlaySoundUtility;
 import utility.Utility;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class AzioneMouseClickCella extends MouseAdapter {
-
     private int r;
     private int c;
 
@@ -26,89 +27,170 @@ public class AzioneMouseClickCella extends MouseAdapter {
         JPanel pannelloPrincipale = (JPanel) button.getParent();
         Cella[][] matriceCelle = SharedCampoMinato.sharedCampo.getCampoMinato().getCampo();
 
-        Cella clickedCell = matriceCelle[r][c];
+        Color controlloColore = (r + c) % 2 == 0 ? ColoreCampo.lightBrown : ColoreCampo.darkerBrown;
+        Cella cellaCliccata = matriceCelle[r][c];
 
-        if (clickedCell.isScoperta()) return;
+        if (cellaCliccata.isScoperta()) return;
 
         if (SwingUtilities.isRightMouseButton(e)) {
-            // Toggle flag
-            if (!clickedCell.isScoperta()) {
-                Icon currentIcon = button.getIcon();
-                if (currentIcon == null) {
-                    button.setIcon(Icons.sharedIcons.iconaBandiera); // You'll define this icon
+            if (!cellaCliccata.isScoperta()) {
+                Color coloreSfondo = ((r + c) % 2 == 0 ) ? ColoreCampo.lightGreen : ColoreCampo.darkerGreen;
+
+                button.setOpaque(true);
+                button.setContentAreaFilled(true);
+                button.setBorderPainted(false);
+                button.setBackground(coloreSfondo);
+
+                Icon iconaCorrente = button.getIcon();
+                if (iconaCorrente == null) {
+                    cellaCliccata.setHasBandiera(true);
+                    button.setIcon(Icons.sharedIcons.iconaBandiera);
                 } else {
-                    button.setIcon(null); // Remove flag
+                    cellaCliccata.setHasBandiera(false);
+                    button.setIcon(null);
                 }
             }
             return;
         }
 
-        // Tolgo bandiera
+        if (cellaCliccata.isHasBandiera()) return;
+
         button.setIcon(null);
 
-        if (clickedCell.isHasMina()) {
-            PlaySoundUtility.playBombSound();
+        if (cellaCliccata.isHasMina() ) {
+            if (SharedCampoMinato.sharedCampo.isPrimoTocco()) {
+                cellaCliccata.setHasMina(false);
+                scopriCella(r, c, matriceCelle, pannelloPrincipale);
+                SharedCampoMinato.sharedCampo.setPrimoTocco(false);
+                effettoCellaCliccata(button, controlloColore);
+                return;
+            }
+            PlaySoundUtility.suonoBomba();
             button.setIcon(Icons.sharedIcons.iconaBomba);
             button.setEnabled(true);
-            Utility.revealAllBombs(pannelloPrincipale);
+            Utility.rivelaBombe(pannelloPrincipale);
         } else {
-            revealEmptyArea(r, c, matriceCelle, pannelloPrincipale);
+            rivelaArea(r, c, matriceCelle, pannelloPrincipale);
         }
 
-        if (!clickedCell.isHasMina()) {
-            if (Utility.checkWinCondition(matriceCelle)) {
-                showWinDialog(pannelloPrincipale);
+        SharedCampoMinato.sharedCampo.setPrimoTocco(false);
+
+        if (!cellaCliccata.isHasMina()) {
+            if (Utility.checkCondizioniVittoria(matriceCelle)) {
+                messaggioVittoria(pannelloPrincipale);
             }
         }
 
-
-        delayPopupGameOver(clickedCell.isHasMina(), pannelloPrincipale);
+        effettoCellaCliccata(button, controlloColore);
+        messaggioSconfitta(cellaCliccata.isHasMina(), pannelloPrincipale);
     }
 
-    private void revealEmptyArea(int r, int c, Cella[][] matriceCelle, JPanel pannelloPrincipale) {
-        int dimensione = matriceCelle.length;
+    @Override
+    public void mouseEntered(MouseEvent e) {
+        super.mouseEntered(e);
+        JButton button = (JButton) e.getSource();
+        if (button.isEnabled()) {
+            button.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
+        }
+    }
 
-        if (r < 0 || r >= dimensione || c < 0 || c >= dimensione) return;
+    @Override
+    public void mouseExited(MouseEvent e) {
+        super.mouseExited(e);
+        JButton button = (JButton) e.getSource();
+        button.setBorder(BorderFactory.createEmptyBorder());
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        super.mousePressed(e);
+        JButton button = (JButton) e.getSource();
+        if (button.isEnabled() && button.getText().isBlank()) {
+            button.setBackground(Color.LIGHT_GRAY);
+        }
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        super.mouseReleased(e);
+    }
+
+    private void effettoCellaCliccata(JButton button, Color coloreCella) {
+        button.setEnabled(!button.getText().isBlank());
+        button.setBackground(coloreCella);
+        button.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+    }
+
+    private void rivelaArea(int r, int c, Cella[][] matriceCelle, JPanel pannelloPrincipale) {
+        if (notValid(r, c, matriceCelle)) return;
 
         Cella cella = matriceCelle[r][c];
         if (cella.isScoperta()) return;
 
-        cella.setScoperta(true);
-        JButton button = (JButton) pannelloPrincipale.getComponent(r * dimensione + c);
-        button.setEnabled(false);
+        scopriCella(r, c, matriceCelle, pannelloPrincipale);
 
         if (cella.isHasMina()) return;
 
         int numeroMine = cella.getNumeroMine();
+        JButton button = getButton(r, c, pannelloPrincipale, matriceCelle.length);
+
         if (numeroMine > 0) {
+            System.out.println("numeroMine " + numeroMine);
+            Color coloreNumero = ColoreCampo.getColoreNumero(numeroMine);
+            button.setForeground(coloreNumero);
+
+            Font fontCorrente = button.getFont();
+            Font nuovoFont = fontCorrente.deriveFont(Font.BOLD, fontCorrente.getSize() + 2f);
+            button.setFont(nuovoFont);
+
             button.setText(String.valueOf(numeroMine));
-            return;
+            button.setEnabled(true);
         } else {
             button.setText("");
-            // Continue revealing adjacent cells
             for (int dr = -1; dr <= 1; dr++) {
                 for (int dc = -1; dc <= 1; dc++) {
                     if (dr != 0 || dc != 0) {
-                        revealEmptyArea(r + dr, c + dc, matriceCelle, pannelloPrincipale);
+                        rivelaArea(r + dr, c + dc, matriceCelle, pannelloPrincipale);
                     }
                 }
             }
         }
     }
 
-    private void showWinDialog(JPanel pannelloPrincipale) {
+    private void scopriCella(int r, int c, Cella[][] matriceCelle, JPanel pannelloPrincipale) {
+        if (notValid(r, c, matriceCelle)) return;
+
+        Cella cella = matriceCelle[r][c];
+        if (cella.isScoperta()) return;
+
+        cella.setScoperta(true);
+        JButton button = getButton(r, c, pannelloPrincipale, matriceCelle.length);
+        button.setEnabled(false);
+        button.setText("");
+        Color controlloColore = (r + c) % 2 == 0 ? ColoreCampo.lightBrown : ColoreCampo.darkerBrown;// Default empty text
+        effettoCellaCliccata(button, controlloColore);
+    }
+
+    private boolean notValid(int r, int c, Cella[][] matriceCelle) {
+        int dimensione = matriceCelle.length;
+        return r < 0 || r >= dimensione || c < 0 || c >= dimensione;
+    }
+
+    private JButton getButton(int r, int c, JPanel pannello, int dim) {
+        return (JButton) pannello.getComponent(r * dim + c);
+    }
+
+
+    private void messaggioVittoria(JPanel pannelloPrincipale) {
         SwingUtilities.invokeLater(() -> {
-            int result = JOptionPane.showConfirmDialog(null, "🎉 Hai vinto! Vuoi giocare ancora?", "Hai vinto!", JOptionPane.YES_NO_OPTION);
-            if (result == JOptionPane.YES_OPTION) {
-                Utility.cambiaDifficolta(SharedCampoMinato.sharedCampo.getDifficolta(), pannelloPrincipale); // Or track selected difficulty
+            int risultato = JOptionPane.showConfirmDialog(null, "🎉 Hai vinto! Vuoi giocare ancora?", "Hai vinto!", JOptionPane.YES_NO_OPTION);
+            if (risultato == JOptionPane.YES_OPTION) {
+                Utility.cambiaDifficolta(SharedCampoMinato.sharedCampo.getDifficolta(), pannelloPrincipale);
             }
         });
     }
 
-
-
-
-    void delayPopupGameOver(boolean hasMine, JPanel pannelloPrincipale) {
+    public void messaggioSconfitta(boolean hasMine, JPanel pannelloPrincipale) {
         if (!hasMine) return;
 
         new Thread(() -> {

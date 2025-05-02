@@ -5,6 +5,7 @@ public class Cella {
     private int numeroMine;
     private boolean hasMina;
     private boolean isScoperta;
+    private boolean hasBandiera = false;
 
     public Cella(int id, int numeroMine, boolean hasMina) {
         this.id = id;
@@ -32,6 +33,10 @@ public class Cella {
         return hasMina;
     }
 
+    public void setHasMina(boolean hasMina) {
+        this.hasMina = hasMina;
+    }
+
     public boolean isScoperta() {
         return isScoperta;
     }
@@ -40,5 +45,11 @@ public class Cella {
         isScoperta = scoperta;
     }
 
+    public boolean isHasBandiera() {
+        return hasBandiera;
+    }
 
+    public void setHasBandiera(boolean hasBandiera) {
+        this.hasBandiera = hasBandiera;
+    }
 }
