@@ -7,7 +7,7 @@ import java.awt.*;
 
 public class Main {
     private final JFrame frame = new JFrame();
-    private final JPanel pannelloPrincipale = new Sfondo("/risorse/menu-bg.png");
+    private final JPanel pannelloPrincipale = new Sfondo("/risorse/campomilla.png");
     private final JPanel pannelloIndietro = new JPanel();
     private final JComboBox<String> comboDifficolta = new JComboBox<>();
 

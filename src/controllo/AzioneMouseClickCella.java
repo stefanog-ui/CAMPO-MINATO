@@ -30,97 +30,68 @@ public class AzioneMouseClickCella extends MouseAdapter {
         Color controlloColore = (r + c) % 2 == 0 ? ColoreCampo.lightBrown : ColoreCampo.darkerBrown;
         Cella cellaCliccata = matriceCelle[r][c];
 
-        if (cellaCliccata.isScoperta()) return;
+        try {
+            if (cellaCliccata.isScoperta()) return;
 
-        if (SwingUtilities.isRightMouseButton(e)) {
-            if (!cellaCliccata.isScoperta()) {
-                Color coloreSfondo = ((r + c) % 2 == 0 ) ? ColoreCampo.lightGreen : ColoreCampo.darkerGreen;
-
-                button.setOpaque(true);
-                button.setContentAreaFilled(true);
-                button.setBorderPainted(false);
-                button.setBackground(coloreSfondo);
-
-                Icon iconaCorrente = button.getIcon();
-                if (iconaCorrente == null) {
-                    cellaCliccata.setHasBandiera(true);
-                    button.setIcon(Icons.sharedIcons.iconaBandiera);
-                } else {
-                    cellaCliccata.setHasBandiera(false);
-                    button.setIcon(null);
-                }
-            }
-            return;
-        }
-
-        if (cellaCliccata.isHasBandiera()) return;
-
-        button.setIcon(null);
-
-        if (cellaCliccata.isHasMina() ) {
-            if (SharedCampoMinato.sharedCampo.isPrimoTocco()) {
-                cellaCliccata.setHasMina(false);
-                scopriCella(r, c, matriceCelle, pannelloPrincipale);
-                SharedCampoMinato.sharedCampo.setPrimoTocco(false);
-                effettoCellaCliccata(button, controlloColore);
+            if (SwingUtilities.isRightMouseButton(e)) {
+                gestisciBandiera(button, cellaCliccata, pannelloPrincipale, controlloColore);
                 return;
             }
-            PlaySoundUtility.suonoBomba();
-            button.setIcon(Icons.sharedIcons.iconaBomba);
-            button.setEnabled(true);
-            Utility.rivelaBombe(pannelloPrincipale);
-        } else {
-            rivelaArea(r, c, matriceCelle, pannelloPrincipale);
-        }
 
-        SharedCampoMinato.sharedCampo.setPrimoTocco(false);
+            if (cellaCliccata.isHasBandiera()) return;
 
-        if (!cellaCliccata.isHasMina()) {
-            if (Utility.checkCondizioniVittoria(matriceCelle)) {
+            button.setIcon(null);
+
+            if (cellaCliccata.isHasMina()) {
+                if (SharedCampoMinato.sharedCampo.isPrimoTocco()) {
+                    cellaCliccata.setHasMina(false);
+                    scopriCella(r, c, matriceCelle, pannelloPrincipale);
+                    SharedCampoMinato.sharedCampo.setPrimoTocco(false);
+                    effettoCellaCliccata(button, controlloColore);
+                    return;
+                }
+                PlaySoundUtility.suonoBomba();
+                button.setIcon(Icons.sharedIcons.iconaBomba);
+                button.setEnabled(true);
+                Utility.rivelaBombe(pannelloPrincipale);
+            } else {
+                rivelaArea(r, c, matriceCelle, pannelloPrincipale);
+            }
+
+            SharedCampoMinato.sharedCampo.setPrimoTocco(false);
+
+            if (!cellaCliccata.isHasMina() && Utility.checkCondizioniVittoria(matriceCelle)) {
                 messaggioVittoria(pannelloPrincipale);
             }
-        }
 
-        effettoCellaCliccata(button, controlloColore);
+            effettoCellaCliccata(button, controlloColore);
+            JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(pannelloPrincipale);
+            messaggioSconfitta(cellaCliccata.isHasMina(), pannelloPrincipale, frame);
 
-        JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(pannelloPrincipale);
-        messaggioSconfitta(cellaCliccata.isHasMina(), pannelloPrincipale, frame);
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-        super.mouseEntered(e);
-        JButton button = (JButton) e.getSource();
-        if (button.isEnabled()) {
-            button.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
+        } catch (Exception eccezione) {
+            System.out.println(eccezione.getLocalizedMessage());
         }
     }
 
-    @Override
-    public void mouseExited(MouseEvent e) {
-        super.mouseExited(e);
-        JButton button = (JButton) e.getSource();
-        button.setBorder(BorderFactory.createEmptyBorder());
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-        super.mousePressed(e);
-        JButton button = (JButton) e.getSource();
-        if (button.isEnabled() && button.getText().isBlank()) {
-            button.setBackground(Color.LIGHT_GRAY);
+    private void gestisciBandiera(JButton button, Cella cellaCliccata, JPanel pannelloPrincipale, Color controlloColore) {
+        if (cellaCliccata.isScoperta()) {
+            System.err.println("Non è possibile modificare la bandiera su una cella già scoperta");
         }
-    }
 
-    @Override
-    public void mouseReleased(MouseEvent e) {
-        super.mouseReleased(e);
-    }
+        Color coloreSfondo = (r + c) % 2 == 0 ? ColoreCampo.lightGreen : ColoreCampo.darkerGreen;
+        button.setOpaque(true);
+        button.setContentAreaFilled(true);
+        button.setBorderPainted(false);
+        button.setBackground(coloreSfondo);
 
-    private void effettoCellaCliccata(JButton button, Color coloreCella) {
-        button.setEnabled(!button.getText().isBlank());
-        button.setBackground(coloreCella);
-        button.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+        Icon iconaCorrente = button.getIcon();
+        if (iconaCorrente == null) {
+            cellaCliccata.setHasBandiera(true);
+            button.setIcon(Icons.sharedIcons.iconaBandiera);
+        } else {
+            cellaCliccata.setHasBandiera(false);
+            button.setIcon(null);
+        }
     }
 
     private void rivelaArea(int r, int c, Cella[][] matriceCelle, JPanel pannelloPrincipale) {
@@ -137,7 +108,6 @@ public class AzioneMouseClickCella extends MouseAdapter {
         JButton button = getButton(r, c, pannelloPrincipale, matriceCelle.length);
 
         if (numeroMine > 0) {
-            System.out.println("numeroMine " + numeroMine);
             Color coloreNumero = ColoreCampo.getColoreNumero(numeroMine);
             button.setForeground(coloreNumero);
 
@@ -169,7 +139,7 @@ public class AzioneMouseClickCella extends MouseAdapter {
         JButton button = getButton(r, c, pannelloPrincipale, matriceCelle.length);
         button.setEnabled(false);
         button.setText("");
-        Color controlloColore = (r + c) % 2 == 0 ? ColoreCampo.lightBrown : ColoreCampo.darkerBrown;// Default empty text
+        Color controlloColore = (r + c) % 2 == 0 ? ColoreCampo.lightBrown : ColoreCampo.darkerBrown;
         effettoCellaCliccata(button, controlloColore);
     }
 
@@ -182,6 +152,11 @@ public class AzioneMouseClickCella extends MouseAdapter {
         return (JButton) pannello.getComponent(r * dim + c);
     }
 
+    private void effettoCellaCliccata(JButton button, Color coloreCella) {
+        button.setEnabled(!button.getText().isBlank());
+        button.setBackground(coloreCella);
+        button.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+    }
 
     private void messaggioVittoria(JPanel pannelloPrincipale) {
         SwingUtilities.invokeLater(() -> {

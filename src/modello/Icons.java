@@ -11,12 +11,8 @@ public class Icons {
     public ImageIcon iconaBomba;
     public ImageIcon iconaBandiera;
 
-    public static final ImageIcon orologio = new ImageIcon("/risorse/orologio.png");
-    public static final ImageIcon coppa = new ImageIcon("/risorse/coppa.png");
-    public static final ImageIcon riprova = new ImageIcon("/risorse/orologio.png");
-
     private Icons() {
-        ImageIcon immagineBomba = new ImageIcon(Objects.requireNonNull(Utility.class.getResource("/risorse/bomb.png")));
+        ImageIcon immagineBomba = new ImageIcon(Objects.requireNonNull(Utility.class.getResource("/risorse/bomba.png")));
         ImageIcon immagineBandiera = new ImageIcon(Objects.requireNonNull(Utility.class.getResource("/risorse/bandiera.png")));
         Image imgBomba = immagineBomba.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
         Image imgBandiera = immagineBandiera.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
