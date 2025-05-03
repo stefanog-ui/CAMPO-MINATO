@@ -35,6 +35,7 @@ public class AzioneMouseClickCella extends MouseAdapter {
 
             if (SwingUtilities.isRightMouseButton(e)) {
                 gestisciBandiera(button, cellaCliccata, pannelloPrincipale, controlloColore);
+                gestisciBandiera(button, cellaCliccata);
                 return;
             }
 
@@ -73,7 +74,7 @@ public class AzioneMouseClickCella extends MouseAdapter {
         }
     }
 
-    private void gestisciBandiera(JButton button, Cella cellaCliccata, JPanel pannelloPrincipale, Color controlloColore) {
+    private void gestisciBandiera(JButton button, Cella cellaCliccata) {
         if (cellaCliccata.isScoperta()) {
             System.err.println("Non è possibile modificare la bandiera su una cella già scoperta");
         }
