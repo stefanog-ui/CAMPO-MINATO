@@ -108,11 +108,11 @@ public class Utility {
     public static void cambiaDifficolta(String difficolta, JPanel pannelloPrincipale) {
         SharedCampoMinato.sharedCampo.setDifficolta(difficolta);
         switch (difficolta) {
-            case "FACILE": creaCampo(9, pannelloPrincipale);
+            case "FACILE": creaCampo(8, pannelloPrincipale);
                 break;
-            case "MEDIO": creaCampo(14, pannelloPrincipale);
+            case "MEDIO": creaCampo(12, pannelloPrincipale);
                 break;
-            case "DIFFICILE": creaCampo(19, pannelloPrincipale);
+            case "DIFFICILE": creaCampo(16, pannelloPrincipale);
                 break;
         }
     }
