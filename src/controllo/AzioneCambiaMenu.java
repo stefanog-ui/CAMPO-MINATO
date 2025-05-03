@@ -30,9 +30,6 @@ public class AzioneCambiaMenu implements ActionListener {
         btnDifficolta.addActionListener(new MostraComboDifficolta(pannelloPrincipale, pannelloIndietro, comboDifficolta));
         btnHelp.addActionListener(new AzioneHelp(pannelloPrincipale));
 
-        pannelloPrincipale.add(btnDifficolta);
-        pannelloPrincipale.add(btnHelp);
-
         btnDifficolta.setAlignmentX(Component.CENTER_ALIGNMENT);
         btnHelp.setAlignmentX(Component.CENTER_ALIGNMENT);
 
