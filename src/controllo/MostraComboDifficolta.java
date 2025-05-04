@@ -28,8 +28,8 @@ public class MostraComboDifficolta implements ActionListener {
         );
 
         if (risultato == JOptionPane.OK_OPTION) {
-            String selectedDifficulty = (String) comboDifficolta.getSelectedItem();
-            Utility.cambiaDifficolta(selectedDifficulty,pannelloPrincipale);
+            String difficoltaSelezionata = (String) comboDifficolta.getSelectedItem();
+            Utility.cambiaDifficolta(difficoltaSelezionata,pannelloPrincipale);
             pannelloIndietro.setVisible(true);
         }
     }

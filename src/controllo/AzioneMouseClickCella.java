@@ -34,7 +34,6 @@ public class AzioneMouseClickCella extends MouseAdapter {
             if (cellaCliccata.isScoperta()) return;
 
             if (SwingUtilities.isRightMouseButton(e)) {
-                gestisciBandiera(button, cellaCliccata, pannelloPrincipale, controlloColore);
                 gestisciBandiera(button, cellaCliccata);
                 return;
             }
